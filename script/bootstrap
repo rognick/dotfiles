@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+cd "$(dirname "${BASH_SOURCE}")/../";
+
+now=$(date +%s)
+
+do_backup() {
+    
+    shopt -s dotglob
+
+    mkdir -p "$HOME/.backups/$now"
+
+    for file in *; do
+        [ -f "$HOME/$file" ] && cp -r "$HOME/$file" "$HOME/.backups/$now/$file"
+    done
+
+    shopt -s dotglob
+}
+
+# do_sync() {
+#     rsync --exclude ".git/" --exclude ".gitmodules"  \
+#           --exclude ".DS_Store" --exclude "Brewfile" \
+#           --exclude "script/" --exclude "README.md"  \
+#           -avq . ~
+
+#     source ~/.bash_profile;
+# }
+
+# if [ "$1" == "--force" -o "$1" == "-f" ]; then
+#     do_sync
+# else
+    echo "This may overwrite existing files in your home directory,"
+    echo "a backup will be saved in \`~/.backups/$now\`."
+
+    read -p "Are you sure? (y/n) " -n 1
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        do_backup
+        # do_sync
+    fi
+# fi
+
+# echo "This may overwrite existing files in your home directory,"
+# echo "a backup will be saved in \`~/.backups/$now\`."
+
+# read "REPLY?Are you sure? (y/n) "
+# echo
+# if [[ $REPLY =~ ^[Yy]$ ]]; then
+#     do_backup
+# fi
+
+# unset do_sync
+unset do_backup
+unset now
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  echo "Please restart Bash to see changes!"
+fi
